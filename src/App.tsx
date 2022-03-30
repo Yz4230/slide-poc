@@ -32,11 +32,33 @@ const lorem = () => loremIpsum({ count: Math.ceil(Math.random() * 30) });
 
 function App() {
   const [text, setText] = useState(lorem);
+  const [overlapText] = useState(lorem);
   const [ref, { height }] = useMeasure();
+  const [started, setStarted] = useState(false);
 
   const styles = useSpring({
     to: {
       height: height > 0 ? `${height}px` : undefined,
+    },
+  });
+
+  const toRightStyle = useSpring({
+    cancel: !started,
+    from: {
+      transform: "translateX(0%)",
+    },
+    to: {
+      transform: "translateX(100%)",
+    },
+  });
+
+  const fromLeftStyles = useSpring({
+    cancel: !started,
+    from: {
+      transform: "translateX(-100%)",
+    },
+    to: {
+      transform: "translateX(0%)",
     },
   });
 
@@ -45,9 +67,32 @@ function App() {
   return (
     <Container>
       <Button onClick={regenerateText}>Regenerate text</Button>
+      <Button css={{ marginTop: "1em" }} onClick={() => setStarted(true)}>
+        Start
+      </Button>
       <PageContainer css={{ marginTop: "1em" }} style={styles}>
-        <div ref={ref}>
-          <p css={{ display: "inline-block" }}>{text}</p>
+        <div ref={ref} css={{ position: "relative", overflow: "hidden" }}>
+          <animated.p
+            css={{
+              display: "inline-block",
+              position: started ? "absolute" : "relative",
+            }}
+            style={toRightStyle}
+          >
+            {text}
+          </animated.p>
+          <animated.p
+            css={{
+              display: "inline-block",
+              position: started ? "relative" : "absolute",
+              top: 0,
+              left: 0,
+              color: "red",
+            }}
+            style={fromLeftStyles}
+          >
+            {overlapText}
+          </animated.p>
         </div>
       </PageContainer>
     </Container>
