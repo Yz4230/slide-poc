@@ -63,7 +63,7 @@ const lorem = () => loremIpsum({ count: Math.ceil(Math.random() * 30) });
 
 function App() {
   const [page, setPage] = useState(0);
-  const [data, setTexts] = useState(() =>
+  const [data, setData] = useState(() =>
     Array.from({ length: 5 }, () => lorem())
   );
   const [ref, { height }] = useMeasure();
@@ -78,7 +78,7 @@ function App() {
   });
 
   const regenerateText = () => {
-    setTexts(Array.from({ length: 5 }, () => lorem()));
+    setData(Array.from({ length: 5 }, () => lorem()));
   };
 
   const slide = (direction: SlideDirection) => {
